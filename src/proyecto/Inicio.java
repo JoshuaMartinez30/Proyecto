@@ -16,12 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class Inicio extends javax.swing.JFrame {
-    ArrayList<Tarea> tareas = new ArrayList();
     String email, contraseña;
-    String nombre, comentario;
-    Date Fecha;
     int posicion;
-    AdminUsuarios usuario = new AdminUsuarios();
+    AdminUsuarios usuario = new AdminUsuarios("./usuarios.txt");
     public Inicio() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -846,14 +843,13 @@ public class Inicio extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                AdminUsuarios ap = new AdminUsuarios("./usuarios.txt");
-                ap.cargarArchivo();
+                usuario.cargarArchivo();
                 aux = tf_EmailR.getText();
                 contraseñaR = pf_contraR.getText();
                 emailR = aux + cbodireccion.getSelectedItem();
                 Registro r = new Registro(emailR, contraseñaR);
-                ap.getListaPersonas().add(r);
-                ap.escribirArchivo();
+                usuario.getListaPersonas().add(r);
+                usuario.escribirArchivo();
                 JOptionPane.showMessageDialog(JD_Registro, "Guardado exitosamente");
                 cbodireccion.setSelectedIndex(0);
                 tf_EmailR.setText("");
@@ -868,7 +864,6 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tb_RegistrarMouseClicked
 
     private void tb_IniciarSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_IniciarSMouseClicked
-        AdminUsuarios ap2 = new AdminUsuarios("./usuarios.txt");
         if (tf_EmailI.getText().isEmpty() || pf_ContraI.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
@@ -877,9 +872,9 @@ public class Inicio extends javax.swing.JFrame {
             email = tf_EmailI.getText();
             contraseña = pf_ContraI.getText();
             try {
-                ap2.cargarArchivo();
-                for (int i = 0; i < ap2.getListaPersonas().size(); i++) {
-                    if (ap2.getListaPersonas().get(i).getEmail().equalsIgnoreCase(email) && ap2.getListaPersonas().get(i).getContraseña().equalsIgnoreCase(contraseña) ){
+                usuario.cargarArchivo();
+                for (int i = 0; i < usuario.getListaPersonas().size(); i++) {
+                    if (usuario.getListaPersonas().get(i).getEmail().equalsIgnoreCase(email) && usuario.getListaPersonas().get(i).getContraseña().equalsIgnoreCase(contraseña) ){
                         posicion = i;
                         JD_Login.setVisible(false);
                         jm_NuevoProyecto.setEnabled(true);
@@ -887,7 +882,7 @@ public class Inicio extends javax.swing.JFrame {
                         tf_EmailI.setText("");
                         pf_ContraI.setText("");
                         cont = 1;
-                        i = ap2.getListaPersonas().size();
+                        i = usuario.getListaPersonas().size();
                     }
                 }
             } catch (Exception e) {
@@ -996,14 +991,16 @@ public class Inicio extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                AdminUsuarios pos = new AdminUsuarios("./usuarios.txt");
-                nombre = tf_Nombre.getText();
-                Fecha = jd_Fecha.getDate();
-                comentario = jta_Comentario.getText();
+                String nombre1, comentario1;
+                Date Fecha1;
+                usuario.cargarArchivo();
+                nombre1 = tf_Nombre.getText();
+                Fecha1 = jd_Fecha.getDate();
+                comentario1 = jta_Comentario.getText();
                 DefaultComboBoxModel model = (DefaultComboBoxModel) cboProyectos.getModel();
-                Proyecto p = new Proyecto(nombre, Fecha, comentario);
-                pos.cargarArchivo();
-                pos.getListaPersonas().get(posicion).getProyecto().add(p);
+                Proyecto p = new Proyecto(nombre1, Fecha1, comentario1);
+                usuario.getListaPersonas().get(posicion).getProyecto().add(p);
+                System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
                 model.addElement(p);
                 cboProyectos.setModel(model);
                 tf_Nombre.setText("");
@@ -1020,18 +1017,20 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnAgregarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarTareaActionPerformed
-        String nombre1, comentario1;
-        Date Fecha1;
+        String nombre2, comentario2;
+        Date Fecha2;
         if (tf_NombreTarea.getText().isEmpty() || jta_ComentarioTarea.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                nombre1 = tf_NombreTarea.getText();
-                Fecha1 = jd_FechaTarea.getDate();
-                comentario1 = jta_ComentarioTarea.getText();
-                Tarea t = new Tarea(nombre1, Fecha1, comentario1);
-                Proyecto p = ((Proyecto) cboProyectos.getSelectedItem());
-                p.getTarea().add(t);
+                int posicion2;
+                usuario.cargarArchivo();
+                nombre2 = tf_NombreTarea.getText();
+                Fecha2 = jd_FechaTarea.getDate();
+                comentario2 = jta_ComentarioTarea.getText();
+                Tarea t = new Tarea(nombre2, Fecha2, comentario2);
+                posicion2 = cboProyectos.getSelectedIndex();
+                usuario.getListaPersonas().get(posicion).getProyecto().get(posicion2).getTarea().add(t);
                 tf_NombreTarea.setText("");
                 jd_FechaTarea.setDate(new Date());
                 jta_ComentarioTarea.setText("");
@@ -1054,6 +1053,7 @@ public class Inicio extends javax.swing.JFrame {
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
         int i = jt_Modificar.getSelectedRow();
+        usuario.cargarArchivo();
         usuario.getListaPersonas().get(posicion).getProyecto().get(i).setNombre(tf_NuevoNombre.getText());
         usuario.getListaPersonas().get(posicion).getProyecto().get(i).setFecha(jd_NuevaFecha.getDate());
         usuario.getListaPersonas().get(posicion).getProyecto().get(i).setComentario(jta_NuevoComentario.getText());
@@ -1064,7 +1064,7 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        usuario.cargarArchivo();
         for (int i = 0; i < usuario.getListaPersonas().get(posicion).getProyecto().size(); i++) {
             usuario.getListaPersonas().get(posicion).getProyecto().remove(i);
         }
@@ -1073,7 +1073,7 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void jt_ModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_ModificarMouseClicked
-        // TODO add your handling code here:
+        usuario.cargarArchivo();
         int seleccion = jt_Modificar.getSelectedRow();
         tf_NuevoNombre.setText(jt_Modificar.getValueAt(seleccion, 0).toString());
         jd_NuevaFecha.setDate(usuario.getListaPersonas().get(posicion).getProyecto().get(seleccion).getFecha());
@@ -1085,9 +1085,6 @@ public class Inicio extends javax.swing.JFrame {
         JD_ModificarUsuario.pack();
         JD_ModificarUsuario.setLocationRelativeTo(null);
         JD_ModificarUsuario.setVisible(true);
-        AdminUsuarios ap = new AdminUsuarios("./usuarios.txt");
-        ap.cargarArchivo();
-        tf_EmailNuevo.setText(ap.getListaPersonas().get(posicion).getEmail());
     }//GEN-LAST:event_jmi_ModificarCuentaActionPerformed
 
     private void tf_EmailNuevoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tf_EmailNuevoKeyTyped
@@ -1102,18 +1099,16 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_EmailNuevoKeyTyped
 
     private void tb_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tb_ModificarActionPerformed
-        AdminUsuarios ap3 = new AdminUsuarios("./usuarios.txt");
-        ap3.cargarArchivo();
+        usuario.cargarArchivo();
         String aux, email, contraseña;
-        if (ap3.getListaPersonas().get(posicion).getContraseña().equalsIgnoreCase(pf_contraAntigua.getText())) {
+        if (usuario.getListaPersonas().get(posicion).getContraseña().equalsIgnoreCase(pf_contraAntigua.getText())) {
             try {
                 aux = tf_EmailNuevo.getText();
                 email = aux + cbodireccionnuevo.getSelectedItem();
                 contraseña = pf_contraNuevo.getText();
-                ap3.cargarArchivo();
-                ap3.getListaPersonas().get(posicion).setEmail(email);
-                ap3.getListaPersonas().get(posicion).setContraseña(contraseña);
-                ap3.escribirArchivo();
+                usuario.getListaPersonas().get(posicion).setEmail(email);
+                usuario.getListaPersonas().get(posicion).setContraseña(contraseña);
+                usuario.escribirArchivo();
                 JOptionPane.showMessageDialog(JD_ModificarUsuario, "Usuario Modificado exitosamente");
                 tf_EmailNuevo.setText("");
                 pf_contraAntigua.setText("");
@@ -1128,23 +1123,22 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tb_ModificarActionPerformed
 
     private void jmi_EliminarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_EliminarCuentaActionPerformed
-        AdminUsuarios ap4 = new AdminUsuarios("./usuarios.txt");
         String confirmar, aux = "CONFIRMAR";
         confirmar = JOptionPane.showInputDialog("Ingrese (CONFIRMAR) si desea Eliminar esta cuenta");
         if (aux.equals(confirmar)) {
             try {
                 email = tf_EmailNuevo.getText();
                 contraseña = pf_contraNuevo.getText();
-                ap4.cargarArchivo();
-                ap4.getListaPersonas().remove(posicion);
-                ap4.escribirArchivo();
+                usuario.cargarArchivo();
+                usuario.getListaPersonas().remove(posicion);
+                usuario.escribirArchivo();
                 JOptionPane.showMessageDialog(this, "Se elimino correctamente");
             } catch (IOException ex) {
                 Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
             }
             jm_NuevoProyecto.setEnabled(false);
             jmi_Login.setEnabled(true);
-
+            
             jt_Eliminar.setModel(new javax.swing.table.DefaultTableModel(
                     new Object[][]{},
                     new String[]{
@@ -1169,7 +1163,9 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_EliminarCuentaActionPerformed
 
     public void mostrar() {
-        Object Matriz[][] = new String[usuario.getListaPersonas().get(posicion).getProyecto().size()][3];
+        usuario.cargarArchivo();
+        System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
+        Object Matriz[][] = new String[usuario.getListaPersonas().get(posicion).getProyecto().size()][4];
         for (int i = 0; i < usuario.getListaPersonas().get(posicion).getProyecto().size(); i++) {
             Matriz[i][0] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getNombre();
             Matriz[i][1] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getFecha().toString();

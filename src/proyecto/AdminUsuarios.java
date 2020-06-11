@@ -10,11 +10,8 @@ import java.util.Scanner;
 public class AdminUsuarios {
 
     private ArrayList<Registro> listaPersonas = new ArrayList();
-    private ArrayList<Proyecto> proyecto = new ArrayList();
     private File archivo = null;
 
-    public AdminUsuarios() {
-    }
 
     public AdminUsuarios(String path) {
         archivo = new File(path);
@@ -77,11 +74,7 @@ public class AdminUsuarios {
             } catch (Exception ex) {
             }
             sc.close();
-        }else if (archivo.exists()) {
-                sc.useDelimiter(";");
-                while (sc.hasNext()) {
-                    listaPersonas.add(new Registro(proyecto));
-                }
         }
+        
     }
 }
