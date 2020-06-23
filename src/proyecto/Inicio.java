@@ -14,8 +14,12 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class Inicio extends javax.swing.JFrame {
+    ArrayList<Registro> usuarios = new ArrayList();
+    ArrayList<Proyecto> proyectos = new ArrayList();
+    ArrayList<Tarea> tareas = new ArrayList();
     String email, contraseña;
     int posicion;
     AdminUsuarios usuario = new AdminUsuarios("./usuarios.txt");
@@ -859,8 +863,6 @@ public class Inicio extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(JD_Registro, "Ocurrio un error no se guardaron los datos");
             }
         }
-
-
     }//GEN-LAST:event_tb_RegistrarMouseClicked
 
     private void tb_IniciarSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_IniciarSMouseClicked
@@ -987,10 +989,16 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_EmailRKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        File archivo = null;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
         if (tf_Nombre.getText().isEmpty() || jta_Comentario.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
+                archivo = new File("./Proyectos.txt");
+                fw = new FileWriter(archivo,true);
+                bw = new BufferedWriter(fw);
                 String nombre1, comentario1;
                 Date Fecha1;
                 usuario.cargarArchivo();
@@ -998,8 +1006,13 @@ public class Inicio extends javax.swing.JFrame {
                 Fecha1 = jd_Fecha.getDate();
                 comentario1 = jta_Comentario.getText();
                 DefaultComboBoxModel model = (DefaultComboBoxModel) cboProyectos.getModel();
-                Proyecto p = new Proyecto(nombre1, Fecha1, comentario1);
-                usuario.getListaPersonas().get(posicion).getProyecto().add(p);
+                Proyecto p = new Proyecto(usuario.getListaPersonas().get(posicion).getEmail(), nombre1, Fecha1, comentario1);
+                bw.append(usuario.getListaPersonas().get(posicion).getEmail()+ ";");
+                bw.append(nombre1+";");
+                bw.append(Fecha1+";");
+                bw.append(comentario1+"\n");
+                bw.flush();
+                proyectos.add(p);
                 System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
                 model.addElement(p);
                 cboProyectos.setModel(model);
@@ -1012,25 +1025,42 @@ public class Inicio extends javax.swing.JFrame {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(JD_Nuevo, "Error, No se creo correctamente");
             }
+            try {
+                bw.close();
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
         mostrar();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnAgregarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarTareaActionPerformed
+        File archivo = null;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
         String nombre2, comentario2;
         Date Fecha2;
         if (tf_NombreTarea.getText().isEmpty() || jta_ComentarioTarea.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                int posicion2;
+                archivo = new File("./Tareas.txt");
+                fw = new FileWriter(archivo,true);
+                bw = new BufferedWriter(fw);
                 usuario.cargarArchivo();
                 nombre2 = tf_NombreTarea.getText();
                 Fecha2 = jd_FechaTarea.getDate();
                 comentario2 = jta_ComentarioTarea.getText();
-                Tarea t = new Tarea(nombre2, Fecha2, comentario2);
-                posicion2 = cboProyectos.getSelectedIndex();
-                usuario.getListaPersonas().get(posicion).getProyecto().get(posicion2).getTarea().add(t);
+                Tarea t = new Tarea(usuario.getListaPersonas().get(posicion).getEmail(), cboProyectos.getSelectedItem().toString(), nombre2, Fecha2, comentario2);
+                tareas.add(t);
+                bw.append(usuario.getListaPersonas().get(posicion).getEmail()+";");
+                bw.append(cboProyectos.getSelectedItem().toString()+";");
+                bw.append(nombre2+";");
+                bw.append(Fecha2+";");
+                bw.append(comentario2+"\n");
+                bw.flush();
                 tf_NombreTarea.setText("");
                 jd_FechaTarea.setDate(new Date());
                 jta_ComentarioTarea.setText("");
@@ -1038,6 +1068,12 @@ public class Inicio extends javax.swing.JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(JD_Nuevo, "Error, No se creo correctamente");
+            }
+            try {
+                bw.close();
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btnAgregarTareaActionPerformed
@@ -1164,7 +1200,12 @@ public class Inicio extends javax.swing.JFrame {
 
     public void mostrar() {
         usuario.cargarArchivo();
+        for (int i = 0; i < proyectos.size(); i++) {
+            usuario.getListaPersonas().get(posicion).getProyecto().add(proyectos.get(i));
+        }
+        DefaultTableModel model = (DefaultTableModel) jt_Modificar.getModel();
         System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
+        
         Object Matriz[][] = new String[usuario.getListaPersonas().get(posicion).getProyecto().size()][4];
         for (int i = 0; i < usuario.getListaPersonas().get(posicion).getProyecto().size(); i++) {
             Matriz[i][0] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getNombre();

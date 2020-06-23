@@ -4,16 +4,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AdminUsuarios {
-
-    private ArrayList<Registro> listaPersonas = new ArrayList();
+public class AdminTareas {
+    private ArrayList<Tarea> listaTareas = new ArrayList();
     private File archivo = null;
 
-
-    public AdminUsuarios(String path) {
+    public AdminTareas(String path) {
         archivo = new File(path);
     }
 
@@ -25,22 +24,22 @@ public class AdminUsuarios {
         this.archivo = archivo;
     }
 
-    public ArrayList<Registro> getListaPersonas() {
-        return listaPersonas;
+    public ArrayList<Tarea> getListaTareas() {
+        return listaTareas;
     }
 
-    public void setListaPersonas(ArrayList<Registro> listaPersonas) {
-        this.listaPersonas = listaPersonas;
+    public void setListaTareas(ArrayList<Tarea> listaTareas) {
+        this.listaTareas = listaTareas;
     }
 
     @Override
     public String toString() {
-        return "listaPersonas=" + listaPersonas;
+        return "listaTareas=" + listaTareas;
     }
 
     //extra mutador
-    public void setRegistro(Registro r) {
-        this.listaPersonas.add(r);
+    public void setTarea(Tarea r) {
+        this.listaTareas.add(r);
     }
 
     //metodos de administracion
@@ -50,9 +49,12 @@ public class AdminUsuarios {
         try {
             fw = new FileWriter(archivo, false);
             bw = new BufferedWriter(fw);
-            for (Registro t : listaPersonas) {
-                bw.write(t.getEmail()+";");
-                bw.write(t.getContraseña()+"\n");
+            for (Tarea t : listaTareas) {
+                bw.write(t.getUsuario() + ";");
+                bw.write(t.getNamep()+ ";");
+                bw.write(t.getNombre() + ";");
+                bw.write(t.getFecha() + ";");
+                bw.write(t.getComentario() + "\n");
             }
             bw.flush();
         } catch (Exception ex) {
@@ -62,18 +64,19 @@ public class AdminUsuarios {
     }
 
     public void cargarArchivo() {
+        SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
         Scanner sc = null;
-        listaPersonas = new ArrayList();
+        listaTareas = new ArrayList();
         if (archivo.exists()) {
             try {
                 sc = new Scanner(archivo);
                 sc.useDelimiter(";");
                 while (sc.hasNext()) {
-                    listaPersonas.add(new Registro(sc.next(), sc.next()));
+                    listaTareas.add(new Tarea(sc.next(), sc.next(), sc.next(), s.parse(sc.next()), sc.next()));
                 }
             } catch (Exception ex) {
             }
             sc.close();
-        }  
+        }
     }
 }

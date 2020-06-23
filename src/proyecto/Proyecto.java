@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Proyecto {
+   private String usuario;
    private String nombre;
    private Date Fecha;
    private String comentario;
@@ -22,6 +23,21 @@ public class Proyecto {
         this.comentario = comentario;
     }
 
+    public Proyecto(String usuario, String nombre, Date Fecha, String comentario) {
+        this.usuario = usuario;
+        this.nombre = nombre;
+        this.Fecha = Fecha;
+        this.comentario = comentario;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+    
     public String getNombre() {
         return nombre;
     }
