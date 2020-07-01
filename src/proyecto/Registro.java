@@ -1,19 +1,24 @@
 package proyecto;
+
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Registro {
+import javax.swing.Icon;
+
+public class Registro implements Serializable {
+
     private String Email, contraseña;
+    private Icon fotografia;
     private ArrayList<Proyecto> proyecto = new ArrayList();
+
+    private static final long SerialVersionUID = 777L;
 
     public Registro() {
     }
 
-    public Registro(String Email, String contraseña) {
+    public Registro(String Email, String contraseña, Icon fotografia) {
         this.Email = Email;
         this.contraseña = contraseña;
-    }
-    
-    public Registro(ArrayList proyecto){
-    setProyecto(proyecto);
+        this.fotografia = fotografia;
     }
 
     public String getEmail() {
@@ -32,6 +37,14 @@ public class Registro {
         this.contraseña = contraseña;
     }
 
+    public Icon getFotografia() {
+        return fotografia;
+    }
+
+    public void setFotografia(Icon fotografia) {
+        this.fotografia = fotografia;
+    }
+
     public ArrayList<Proyecto> getProyecto() {
         return proyecto;
     }
@@ -39,15 +52,12 @@ public class Registro {
     public void setProyecto(ArrayList<Proyecto> proyecto) {
         this.proyecto = proyecto;
     }
-    
-    public void setProyecto(Proyecto p) {
-        this.proyecto.add(p);
-    }
-        
+
     @Override
     public String toString() {
         return Email;
     }
+
     
-    
+
 }

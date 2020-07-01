@@ -1,9 +1,14 @@
 package proyecto;
 
 import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,14 +22,6 @@ public class AdminUsuarios {
         archivo = new File(path);
     }
 
-    public File getArchivo() {
-        return archivo;
-    }
-
-    public void setArchivo(File archivo) {
-        this.archivo = archivo;
-    }
-
     public ArrayList<Registro> getListaPersonas() {
         return listaPersonas;
     }
@@ -33,47 +30,68 @@ public class AdminUsuarios {
         this.listaPersonas = listaPersonas;
     }
 
+    public File getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(File archivo) {
+        this.archivo = archivo;
+    }
+
     @Override
     public String toString() {
         return "listaPersonas=" + listaPersonas;
     }
 
     //extra mutador
-    public void setRegistro(Registro r) {
-        this.listaPersonas.add(r);
-    }
-
-    //metodos de administracion
-    public void escribirArchivo() throws IOException {
-        FileWriter fw = null;
-        BufferedWriter bw = null;
-        try {
-            fw = new FileWriter(archivo, false);
-            bw = new BufferedWriter(fw);
-            for (Registro t : listaPersonas) {
-                bw.write(t.getEmail()+";");
-                bw.write(t.getContraseña()+"\n");
-            }
-            bw.flush();
-        } catch (Exception ex) {
-        }
-        bw.close();
-        fw.close();
+    public void setPersona(Registro p) {
+        this.listaPersonas.add(p);
     }
 
     public void cargarArchivo() {
-        Scanner sc = null;
-        listaPersonas = new ArrayList();
-        if (archivo.exists()) {
-            try {
-                sc = new Scanner(archivo);
-                sc.useDelimiter(";");
-                while (sc.hasNext()) {
-                    listaPersonas.add(new Registro(sc.next(), sc.next()));
+        try {            
+            listaPersonas = new ArrayList();
+            Registro temp;
+            if (archivo.exists()) {
+                  FileInputStream entrada
+                    = new FileInputStream(archivo);
+                ObjectInputStream objeto
+                    = new ObjectInputStream(entrada);
+                try {
+                    while ((temp = (Registro) objeto.readObject()) != null) {
+                        listaPersonas.add(temp);
+                    }
+                } catch (EOFException e) {
+                    e.printStackTrace();
+                    //encontro el final del archivo
                 }
-            } catch (Exception ex) {
+                objeto.close();
+                entrada.close();
+            } //fin if           
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void escribirArchivo() {
+        FileOutputStream fw = null;
+        ObjectOutputStream bw = null;
+        try {
+            fw = new FileOutputStream(archivo);
+            bw = new ObjectOutputStream(fw);
+            for (Registro t : listaPersonas) {
+                bw.writeObject(t);
             }
-            sc.close();
-        }  
+            bw.flush();
+        } catch (Exception ex) {
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+        }
     }
 }
+

@@ -1,0 +1,45 @@
+Dia: Wed Jul 01 00:16:25 CST 2020
+Inicio Sesion: joshua@gmail.com
+
+----------------------------------
+Dia: Wed Jul 01 01:26:47 CST 2020
+Inicio Sesion: joshua@gmail.com
+
+Dia: Wed Jul 01 01:27:04 CST 2020
+Se elimino Tarea: progra
+
+Dia: Wed Jul 01 01:27:14 CST 2020
+Se elimino Tarea: proyecto
+
+Dia: Wed Jul 01 01:27:22 CST 2020
+Se elimino Tarea: Ingles
+
+Dia: Wed Jul 01 01:27:44 CST 2020
+Se elimino Proyecto
+
+Dia: Wed Jul 01 01:27:47 CST 2020
+Se elimino Proyecto
+
+Dia: Wed Jul 01 01:27:49 CST 2020
+Se elimino Proyecto
+
+Dia: Wed Jul 01 01:27:52 CST 2020
+Se elimino Proyecto
+
+----------------------------------
+Dia: Wed Jul 01 01:29:26 CST 2020
+Inicio Sesion: hola@gmail.com
+
+Dia: Wed Jul 01 01:29:36 CST 2020
+Se elimino Proyecto
+
+Dia: Wed Jul 01 01:30:31 CST 2020
+Se Modifico usuario:hola@gmail.com
+
+Dia: Wed Jul 01 01:30:52 CST 2020
+Se elimino usuario: hola@gmail.com
+
+----------------------------------
+Dia: Wed Jul 01 01:39:30 CST 2020
+Inicio Sesion: joshua@gmail.com
+

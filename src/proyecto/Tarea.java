@@ -6,13 +6,13 @@ public class Tarea {
     private String usuario;
     private String namep;
     private String nombre;
-    private Date Fecha;
+    private String Fecha;
     private String comentario;
     public Tarea() {
     }
 
 
-    public Tarea(String usuario, String namep, String nombre, Date Fecha, String comentario) {
+    public Tarea(String usuario, String namep, String nombre, String Fecha, String comentario) {
         this.usuario = usuario;
         this.namep = namep;
         this.nombre = nombre;
@@ -29,11 +29,11 @@ public class Tarea {
         this.nombre = nombre;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return Fecha;
     }
 
-    public void setFecha(Date Fecha) {
+    public void setFecha(String Fecha) {
         this.Fecha = Fecha;
     }
 

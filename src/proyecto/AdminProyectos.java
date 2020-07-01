@@ -6,11 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class AdminProyectos {
 
-    private ArrayList<Proyecto> listaProyectos = new ArrayList();
+    private ArrayList<Proyecto> ListaProyectos = new ArrayList();
     private File archivo = null;
 
     public AdminProyectos(String path) {
@@ -26,21 +27,21 @@ public class AdminProyectos {
     }
 
     public ArrayList<Proyecto> getListaProyectos() {
-        return listaProyectos;
+        return ListaProyectos;
     }
 
-    public void setListaProyectos(ArrayList<Proyecto> listaProyectos) {
-        this.listaProyectos = listaProyectos;
+    public void setListaProyectos(ArrayList<Proyecto> ListaProyectos) {
+        this.ListaProyectos = ListaProyectos;
     }
 
     @Override
     public String toString() {
-        return "listaProyectos=" + listaProyectos;
+        return "listaProyectos=" + ListaProyectos;
     }
 
     //extra mutador
-    public void setProyecto(Proyecto r) {
-        this.listaProyectos.add(r);
+    public void setProyectos(Proyecto p) {
+        this.ListaProyectos.add(p);
     }
 
     //metodos de administracion
@@ -50,33 +51,39 @@ public class AdminProyectos {
         try {
             fw = new FileWriter(archivo, false);
             bw = new BufferedWriter(fw);
-            for (Proyecto t : listaProyectos) {
+            for (Proyecto t : ListaProyectos) {
                 bw.write(t.getUsuario() + ";");
                 bw.write(t.getNombre() + ";");
                 bw.write(t.getFecha() + ";");
-                bw.write(t.getComentario() + "\n");
+                bw.write(t.getComentario() + ";");
+                bw.flush();
             }
-            bw.flush();
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
         bw.close();
         fw.close();
     }
 
     public void cargarArchivo() {
-        SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
         Scanner sc = null;
-        listaProyectos = new ArrayList();
+        ListaProyectos = new ArrayList();
         if (archivo.exists()) {
             try {
                 sc = new Scanner(archivo);
                 sc.useDelimiter(";");
                 while (sc.hasNext()) {
-                    listaProyectos.add(new Proyecto(sc.next(), sc.next(), s.parse(sc.next()), sc.next()));
+                    ListaProyectos.add(new Proyecto(sc.next(),
+                            sc.next(),
+                            sc.next(),
+                            sc.next()
+                    )
+                    );
                 }
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
             sc.close();
-        }
+        }//FIN IF
     }
 }

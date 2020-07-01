@@ -1,30 +1,44 @@
 package proyecto;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 public class Inicio extends javax.swing.JFrame {
+
     ArrayList<Registro> usuarios = new ArrayList();
     ArrayList<Proyecto> proyectos = new ArrayList();
-    ArrayList<Tarea> tareas = new ArrayList();
-    String email, contraseña;
-    int posicion;
-    AdminUsuarios usuario = new AdminUsuarios("./usuarios.txt");
+
+    String email, contraseña, emailactivo = "";
+    int posicion, num = 0;
+    AdminUsuarios usuario = new AdminUsuarios("./usuarios.cbm");
+    AdminProyectos ap = new AdminProyectos("./Proyectos.txt");
+    Dba db = new Dba("./baseT1.accdb");
+
     public Inicio() {
         initComponents();
+        jmi_NuevaTarea.setEnabled(true);
         this.setExtendedState(MAXIMIZED_BOTH);
         ImageIcon icon = new ImageIcon("C:\\Users\\joshu\\OneDrive\\Documentos\\Progra 2\\Tareas\\Proyecto\\Iconos\\todoist5.png");
         this.setIconImage(icon.getImage());
@@ -57,6 +71,9 @@ public class Inicio extends javax.swing.JFrame {
         pf_contraR = new javax.swing.JPasswordField();
         cbodireccion = new javax.swing.JComboBox<>();
         jLabel28 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        lb_foto = new javax.swing.JLabel();
+        btnSeleccionar = new javax.swing.JButton();
         JD_Nuevo = new javax.swing.JDialog();
         jLabel3 = new javax.swing.JLabel();
         tf_Nombre = new javax.swing.JTextField();
@@ -110,22 +127,42 @@ public class Inicio extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
         pf_contraAntigua = new javax.swing.JPasswordField();
+        jPanel4 = new javax.swing.JPanel();
+        lb_foto1 = new javax.swing.JLabel();
+        btnSeleccionar1 = new javax.swing.JButton();
+        jLabel30 = new javax.swing.JLabel();
+        JD_ModificarTarea = new javax.swing.JDialog();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jt_ModificarT = new javax.swing.JTable();
+        cboModificar = new javax.swing.JComboBox<>();
+        popupModificar = new javax.swing.JPopupMenu();
+        jmi_ModificarTarea = new javax.swing.JMenuItem();
+        jmi_Eliminar = new javax.swing.JMenuItem();
+        JD_Graficos = new javax.swing.JDialog();
+        jp_Proyectos = new javax.swing.JProgressBar();
+        jp_Tareas = new javax.swing.JProgressBar();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jm_Inicio = new javax.swing.JMenu();
         jmi_Login = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jmi_Logout = new javax.swing.JMenuItem();
-        jm_NuevoProyecto = new javax.swing.JMenu();
-        jmi_NuevoProyecto = new javax.swing.JMenuItem();
-        jmi_NuevaTarea = new javax.swing.JMenuItem();
-        jm_AdminProyecto = new javax.swing.JMenu();
-        jmi_Modificar = new javax.swing.JMenuItem();
-        jmi_EliminarProyecto = new javax.swing.JMenuItem();
-        jmi_ListarProyecto = new javax.swing.JMenuItem();
         jm_Configurar = new javax.swing.JMenu();
         jmi_ModificarCuenta = new javax.swing.JMenuItem();
         jmi_EliminarCuenta = new javax.swing.JMenuItem();
         jmi_Salir = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jmi_Logout = new javax.swing.JMenuItem();
+        jm_NuevoProyecto = new javax.swing.JMenu();
+        jmi_NuevoProyecto = new javax.swing.JMenuItem();
+        jm_AdminProyecto = new javax.swing.JMenu();
+        jmi_Modificar = new javax.swing.JMenuItem();
+        jmi_EliminarProyecto = new javax.swing.JMenuItem();
+        jmi_ListarProyecto = new javax.swing.JMenuItem();
+        jm_Tarea = new javax.swing.JMenu();
+        jmi_NuevaTarea = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jm_graficos = new javax.swing.JMenu();
+        jmi_graficos = new javax.swing.JMenuItem();
 
         tb_IniciarS.setBackground(new java.awt.Color(219, 76, 63));
         tb_IniciarS.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -269,14 +306,43 @@ public class Inicio extends javax.swing.JFrame {
 
         jLabel28.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Fondos/Todoist-lockup_positive2.png"))); // NOI18N
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lb_foto, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_foto, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout JD_RegistroLayout = new javax.swing.GroupLayout(JD_Registro.getContentPane());
         JD_Registro.getContentPane().setLayout(JD_RegistroLayout);
         JD_RegistroLayout.setHorizontalGroup(
             JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
             .addGroup(JD_RegistroLayout.createSequentialGroup()
-                .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(JD_RegistroLayout.createSequentialGroup()
+                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JD_RegistroLayout.createSequentialGroup()
+                .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JD_RegistroLayout.createSequentialGroup()
                         .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(JD_RegistroLayout.createSequentialGroup()
                                 .addGap(99, 99, 99)
@@ -289,32 +355,37 @@ public class Inicio extends javax.swing.JFrame {
                         .addGap(0, 106, Short.MAX_VALUE))
                     .addGroup(JD_RegistroLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tf_EmailR)
-                            .addComponent(tb_Registrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(pf_contraR)
-                            .addGroup(JD_RegistroLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(cbodireccion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(tf_EmailR, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tb_Registrar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JD_RegistroLayout.createSequentialGroup()
+                                .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addGroup(JD_RegistroLayout.createSequentialGroup()
+                                        .addGap(11, 11, 11)
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnSeleccionar)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbodireccion, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addGroup(JD_RegistroLayout.createSequentialGroup()
-                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(JD_RegistroLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         JD_RegistroLayout.setVerticalGroup(
             JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JD_RegistroLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
+                .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(JD_RegistroLayout.createSequentialGroup()
+                        .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(JD_RegistroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(btnSeleccionar))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tf_EmailR, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -616,7 +687,7 @@ public class Inicio extends javax.swing.JFrame {
         );
 
         jLabel24.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel24.setText("Email");
+        jLabel24.setText("Nuevo Email");
 
         tf_EmailNuevo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -647,52 +718,217 @@ public class Inicio extends javax.swing.JFrame {
         jLabel26.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel26.setText("Contraseña antigua");
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lb_foto1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_foto1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        btnSeleccionar1.setText("Seleccionar");
+        btnSeleccionar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionar1ActionPerformed(evt);
+            }
+        });
+
+        jLabel30.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel30.setText("Nueva foto de Perfil");
+
         javax.swing.GroupLayout JD_ModificarUsuarioLayout = new javax.swing.GroupLayout(JD_ModificarUsuario.getContentPane());
         JD_ModificarUsuario.getContentPane().setLayout(JD_ModificarUsuarioLayout);
         JD_ModificarUsuarioLayout.setHorizontalGroup(
             JD_ModificarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
-                .addGap(157, 157, 157)
-                .addComponent(jLabel23)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
-                .addGap(70, 70, 70)
                 .addGroup(JD_ModificarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tb_Modificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tf_EmailNuevo)
-                    .addComponent(cbodireccionnuevo, 0, 447, Short.MAX_VALUE)
-                    .addComponent(pf_contraNuevo)
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(jLabel23))
                     .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
                         .addGroup(JD_ModificarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel26)
-                            .addComponent(jLabel24)
-                            .addComponent(jLabel25))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(pf_contraAntigua))
-                .addContainerGap())
+                            .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addComponent(btnSeleccionar1)
+                                .addGap(23, 23, 23))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JD_ModificarUsuarioLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel30)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel24))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(tf_EmailNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(cbodireccionnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel26))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(pf_contraAntigua, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel25))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(pf_contraNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(tb_Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         JD_ModificarUsuarioLayout.setVerticalGroup(
             JD_ModificarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(30, 30, 30)
                 .addComponent(jLabel23)
-                .addGap(18, 18, 18)
+                .addGap(21, 21, 21)
+                .addGroup(JD_ModificarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(JD_ModificarUsuarioLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel30)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSeleccionar1))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
                 .addComponent(jLabel24)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tf_EmailNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(15, 15, 15)
                 .addComponent(cbodireccionnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(30, 30, 30)
                 .addComponent(jLabel26)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(13, 13, 13)
                 .addComponent(pf_contraAntigua, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel25)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(13, 13, 13)
                 .addComponent(pf_contraNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(tb_Modificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(33, 33, 33))
+                .addGap(22, 22, 22)
+                .addComponent(tb_Modificar)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jt_ModificarT.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Nombre", "Fecha", "Comentario"
+            }
+        ));
+        jt_ModificarT.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jt_ModificarTMouseClicked(evt);
+            }
+        });
+        jScrollPane7.setViewportView(jt_ModificarT);
+
+        cboModificar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        cboModificar.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboModificarItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout JD_ModificarTareaLayout = new javax.swing.GroupLayout(JD_ModificarTarea.getContentPane());
+        JD_ModificarTarea.getContentPane().setLayout(JD_ModificarTareaLayout);
+        JD_ModificarTareaLayout.setHorizontalGroup(
+            JD_ModificarTareaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JD_ModificarTareaLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(JD_ModificarTareaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+                    .addComponent(cboModificar, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
+        );
+        JD_ModificarTareaLayout.setVerticalGroup(
+            JD_ModificarTareaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JD_ModificarTareaLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(cboModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(55, Short.MAX_VALUE))
+        );
+
+        jmi_ModificarTarea.setText("Modificar");
+        jmi_ModificarTarea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_ModificarTareaActionPerformed(evt);
+            }
+        });
+        popupModificar.add(jmi_ModificarTarea);
+
+        jmi_Eliminar.setText("Eliminar");
+        jmi_Eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_EliminarActionPerformed(evt);
+            }
+        });
+        popupModificar.add(jmi_Eliminar);
+
+        jp_Proyectos.setMaximum(20);
+        jp_Proyectos.setString("0");
+        jp_Proyectos.setStringPainted(true);
+
+        jp_Tareas.setMaximum(20);
+        jp_Tareas.setString("0");
+        jp_Tareas.setStringPainted(true);
+
+        jLabel31.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel31.setText("Estadistica De Proyectos");
+
+        jLabel32.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel32.setText("Estadistica De Tareas");
+
+        javax.swing.GroupLayout JD_GraficosLayout = new javax.swing.GroupLayout(JD_Graficos.getContentPane());
+        JD_Graficos.getContentPane().setLayout(JD_GraficosLayout);
+        JD_GraficosLayout.setHorizontalGroup(
+            JD_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JD_GraficosLayout.createSequentialGroup()
+                .addGroup(JD_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(JD_GraficosLayout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addGroup(JD_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jp_Tareas, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                            .addComponent(jp_Proyectos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(JD_GraficosLayout.createSequentialGroup()
+                        .addGap(107, 107, 107)
+                        .addComponent(jLabel31))
+                    .addGroup(JD_GraficosLayout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jLabel32)))
+                .addContainerGap(83, Short.MAX_VALUE))
+        );
+        JD_GraficosLayout.setVerticalGroup(
+            JD_GraficosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JD_GraficosLayout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addComponent(jLabel31)
+                .addGap(33, 33, 33)
+                .addComponent(jp_Proyectos, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(74, 74, 74)
+                .addComponent(jLabel32)
+                .addGap(36, 36, 36)
+                .addComponent(jp_Tareas, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -709,6 +945,40 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
         jm_Inicio.add(jmi_Login);
+
+        jm_Configurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Configuracion1.png"))); // NOI18N
+        jm_Configurar.setText("Configuracion");
+        jm_Configurar.setEnabled(false);
+
+        jmi_ModificarCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/modificar1.png"))); // NOI18N
+        jmi_ModificarCuenta.setText("Modificar cuenta");
+        jmi_ModificarCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_ModificarCuentaActionPerformed(evt);
+            }
+        });
+        jm_Configurar.add(jmi_ModificarCuenta);
+
+        jmi_EliminarCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Eliminar1.png"))); // NOI18N
+        jmi_EliminarCuenta.setText("Eliminar Cuenta");
+        jmi_EliminarCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_EliminarCuentaActionPerformed(evt);
+            }
+        });
+        jm_Configurar.add(jmi_EliminarCuenta);
+
+        jm_Inicio.add(jm_Configurar);
+
+        jmi_Salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/log out.png"))); // NOI18N
+        jmi_Salir.setText("Cerrar Sesion");
+        jmi_Salir.setEnabled(false);
+        jmi_Salir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_SalirActionPerformed(evt);
+            }
+        });
+        jm_Inicio.add(jmi_Salir);
         jm_Inicio.add(jSeparator2);
 
         jmi_Logout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
@@ -735,17 +1005,6 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
         jm_NuevoProyecto.add(jmi_NuevoProyecto);
-
-        jmi_NuevaTarea.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
-        jmi_NuevaTarea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/nueva tarea1.png"))); // NOI18N
-        jmi_NuevaTarea.setText("Nueva Tarea");
-        jmi_NuevaTarea.setEnabled(false);
-        jmi_NuevaTarea.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_NuevaTareaActionPerformed(evt);
-            }
-        });
-        jm_NuevoProyecto.add(jmi_NuevaTarea);
 
         jm_AdminProyecto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/admin1.png"))); // NOI18N
         jm_AdminProyecto.setText("Administrar Proyecto");
@@ -782,39 +1041,51 @@ public class Inicio extends javax.swing.JFrame {
 
         jm_NuevoProyecto.add(jm_AdminProyecto);
 
-        jm_Configurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Configuracion1.png"))); // NOI18N
-        jm_Configurar.setText("Configuracion");
-
-        jmi_ModificarCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/modificar1.png"))); // NOI18N
-        jmi_ModificarCuenta.setText("Modificar cuenta");
-        jmi_ModificarCuenta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_ModificarCuentaActionPerformed(evt);
-            }
-        });
-        jm_Configurar.add(jmi_ModificarCuenta);
-
-        jmi_EliminarCuenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Eliminar1.png"))); // NOI18N
-        jmi_EliminarCuenta.setText("Eliminar Cuenta");
-        jmi_EliminarCuenta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_EliminarCuentaActionPerformed(evt);
-            }
-        });
-        jm_Configurar.add(jmi_EliminarCuenta);
-
-        jm_NuevoProyecto.add(jm_Configurar);
-
-        jmi_Salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/log out.png"))); // NOI18N
-        jmi_Salir.setText("Cerrar Sesion");
-        jmi_Salir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_SalirActionPerformed(evt);
-            }
-        });
-        jm_NuevoProyecto.add(jmi_Salir);
-
         jMenuBar1.add(jm_NuevoProyecto);
+
+        jm_Tarea.setText("Tarea");
+        jm_Tarea.setEnabled(false);
+
+        jmi_NuevaTarea.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
+        jmi_NuevaTarea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/nueva tarea1.png"))); // NOI18N
+        jmi_NuevaTarea.setText("Nueva Tarea");
+        jmi_NuevaTarea.setEnabled(false);
+        jmi_NuevaTarea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_NuevaTareaActionPerformed(evt);
+            }
+        });
+        jm_Tarea.add(jmi_NuevaTarea);
+
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/admin1.png"))); // NOI18N
+        jMenuItem3.setText("Administrar Tarea");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jm_Tarea.add(jMenuItem3);
+
+        jMenuBar1.add(jm_Tarea);
+
+        jm_graficos.setText("Graficos");
+        jm_graficos.setEnabled(false);
+        jm_graficos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jm_graficosActionPerformed(evt);
+            }
+        });
+
+        jmi_graficos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/grafico1.png"))); // NOI18N
+        jmi_graficos.setText("Mostrar Grafico");
+        jmi_graficos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_graficosActionPerformed(evt);
+            }
+        });
+        jm_graficos.add(jmi_graficos);
+
+        jMenuBar1.add(jm_graficos);
 
         setJMenuBar(jMenuBar1);
 
@@ -842,7 +1113,8 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_lblLoginMouseClicked
 
     private void tb_RegistrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_RegistrarMouseClicked
-        String emailR, contraseñaR, aux;
+        num = 0;
+        String emailR = "", contraseñaR, aux;
         if (tf_EmailR.getText().isEmpty() || pf_contraR.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
@@ -851,8 +1123,9 @@ public class Inicio extends javax.swing.JFrame {
                 aux = tf_EmailR.getText();
                 contraseñaR = pf_contraR.getText();
                 emailR = aux + cbodireccion.getSelectedItem();
-                Registro r = new Registro(emailR, contraseñaR);
-                usuario.getListaPersonas().add(r);
+                Registro r = new Registro(emailR, contraseñaR, lb_foto.getIcon());
+                usuario.cargarArchivo();
+                usuario.setPersona(r);
                 usuario.escribirArchivo();
                 JOptionPane.showMessageDialog(JD_Registro, "Guardado exitosamente");
                 cbodireccion.setSelectedIndex(0);
@@ -863,28 +1136,56 @@ public class Inicio extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(JD_Registro, "Ocurrio un error no se guardaron los datos");
             }
         }
+        Bitacora g = new Bitacora(emailR, num);
+        Thread proceso2 = new Thread(g);
+        proceso2.start();
+
     }//GEN-LAST:event_tb_RegistrarMouseClicked
 
     private void tb_IniciarSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_IniciarSMouseClicked
+        int cont = 0;
+        num = 1;
         if (tf_EmailI.getText().isEmpty() || pf_ContraI.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             String email, contraseña;
-            int cont = 0;
             email = tf_EmailI.getText();
             contraseña = pf_ContraI.getText();
             try {
                 usuario.cargarArchivo();
                 for (int i = 0; i < usuario.getListaPersonas().size(); i++) {
-                    if (usuario.getListaPersonas().get(i).getEmail().equalsIgnoreCase(email) && usuario.getListaPersonas().get(i).getContraseña().equalsIgnoreCase(contraseña) ){
+                    if (usuario.getListaPersonas().get(i).getEmail().equalsIgnoreCase(tf_EmailI.getText()) && usuario.getListaPersonas().get(i).getContraseña().equalsIgnoreCase(pf_ContraI.getText())) {
+                        emailactivo = usuario.getListaPersonas().get(i).getEmail();
                         posicion = i;
                         JD_Login.setVisible(false);
                         jm_NuevoProyecto.setEnabled(true);
+                        jm_Configurar.setEnabled(true);
+                        jmi_Salir.setEnabled(true);
                         jmi_Login.setEnabled(false);
+                        jm_graficos.setEnabled(true);
                         tf_EmailI.setText("");
                         pf_ContraI.setText("");
                         cont = 1;
                         i = usuario.getListaPersonas().size();
+                        Bitacora g = new Bitacora(emailactivo, num);
+                        Thread proceso2 = new Thread(g);
+                        proceso2.start();
+                        ap.cargarArchivo();
+                        DefaultComboBoxModel model = (DefaultComboBoxModel) cboProyectos.getModel();
+                        model.addElement("");
+                        for (int j = 0; j < ap.getListaProyectos().size(); j++) {
+                            if (ap.getListaProyectos().get(j).getUsuario().equalsIgnoreCase(emailactivo)) {
+                                proyectos.add(ap.getListaProyectos().get(j));
+                                model.addElement(ap.getListaProyectos().get(j));
+                                cboProyectos.setModel(model);
+                                cboModificar.setModel(model);
+                            }
+                        }
+                        if (proyectos.size() >= 0) {
+                            jm_Tarea.setEnabled(true);
+                            jp_Proyectos.setValue(proyectos.size());
+                        }
+                        mostrar();
                     }
                 }
             } catch (Exception e) {
@@ -893,6 +1194,7 @@ public class Inicio extends javax.swing.JFrame {
             if (cont == 0) {
                 JOptionPane.showMessageDialog(JD_Login, "Email o contraseña incorrectos");
             }
+
         }
     }//GEN-LAST:event_tb_IniciarSMouseClicked
 
@@ -949,7 +1251,9 @@ public class Inicio extends javax.swing.JFrame {
         // TODO add your handling code here:
         jm_NuevoProyecto.setEnabled(false);
         jmi_Login.setEnabled(true);
-
+        jm_Tarea.setEnabled(false);
+        jm_Configurar.setEnabled(false);
+        jmi_Salir.setEnabled(false);
         jt_Eliminar.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
@@ -989,78 +1293,62 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_EmailRKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        File archivo = null;
-        FileWriter fw = null;
-        BufferedWriter bw = null;
+        num = 2;
         if (tf_Nombre.getText().isEmpty() || jta_Comentario.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                archivo = new File("./Proyectos.txt");
-                fw = new FileWriter(archivo,true);
-                bw = new BufferedWriter(fw);
-                String nombre1, comentario1;
-                Date Fecha1;
-                usuario.cargarArchivo();
+                SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
+                ap.cargarArchivo();
+                String nombre1, comentario1, fecha;
                 nombre1 = tf_Nombre.getText();
-                Fecha1 = jd_Fecha.getDate();
+                fecha = s.format(jd_Fecha.getDate());
+                System.out.println(fecha);
                 comentario1 = jta_Comentario.getText();
                 DefaultComboBoxModel model = (DefaultComboBoxModel) cboProyectos.getModel();
-                Proyecto p = new Proyecto(usuario.getListaPersonas().get(posicion).getEmail(), nombre1, Fecha1, comentario1);
-                bw.append(usuario.getListaPersonas().get(posicion).getEmail()+ ";");
-                bw.append(nombre1+";");
-                bw.append(Fecha1+";");
-                bw.append(comentario1+"\n");
-                bw.flush();
+                Proyecto p = new Proyecto(emailactivo, nombre1, fecha, comentario1);
+                ap.getListaProyectos().add(p);
+                ap.escribirArchivo();
                 proyectos.add(p);
-                System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
+                jp_Proyectos.setValue(proyectos.size());
                 model.addElement(p);
                 cboProyectos.setModel(model);
-                tf_Nombre.setText("");
+                cboModificar.setModel(model);
                 jd_Fecha.setDate(new Date());
                 jta_Comentario.setText("");
-                jmi_NuevaTarea.setEnabled(true);
                 JOptionPane.showMessageDialog(JD_Nuevo, "Se creo correctamente");
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(JD_Nuevo, "Error, No se creo correctamente");
             }
-            try {
-                bw.close();
-                fw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+            Bitacora g = new Bitacora(emailactivo, tf_Nombre.getText(), num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            tf_Nombre.setText("");
         }
         mostrar();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnAgregarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarTareaActionPerformed
-        File archivo = null;
-        FileWriter fw = null;
-        BufferedWriter bw = null;
-        String nombre2, comentario2;
-        Date Fecha2;
+        num = 3;
+        SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
+        String nombre2, comentario2, fecha;
         if (tf_NombreTarea.getText().isEmpty() || jta_ComentarioTarea.getText().isEmpty()) {
             JOptionPane.showMessageDialog(JD_Registro, "Por favor, LLene los campos vacios");
         } else {
             try {
-                archivo = new File("./Tareas.txt");
-                fw = new FileWriter(archivo,true);
-                bw = new BufferedWriter(fw);
-                usuario.cargarArchivo();
+                db.conectar();
                 nombre2 = tf_NombreTarea.getText();
-                Fecha2 = jd_FechaTarea.getDate();
+                fecha = s.format(jd_FechaTarea.getDate());
                 comentario2 = jta_ComentarioTarea.getText();
-                Tarea t = new Tarea(usuario.getListaPersonas().get(posicion).getEmail(), cboProyectos.getSelectedItem().toString(), nombre2, Fecha2, comentario2);
-                tareas.add(t);
-                bw.append(usuario.getListaPersonas().get(posicion).getEmail()+";");
-                bw.append(cboProyectos.getSelectedItem().toString()+";");
-                bw.append(nombre2+";");
-                bw.append(Fecha2+";");
-                bw.append(comentario2+"\n");
-                bw.flush();
+                db.query.execute("INSERT INTO Tarea"
+                        + " (Nombre,Fecha,comentario,email,proyecto)"
+                        + " VALUES ('" + nombre2 + "', '" + fecha + "', '" + comentario2 + "', '"
+                        + emailactivo + "', '"
+                        + cboProyectos.getSelectedItem().toString() + "')");
+                db.commit();
+                db.desconectar();
+                Tarea t = new Tarea(emailactivo, cboProyectos.getSelectedItem().toString(), nombre2, fecha, comentario2);
                 tf_NombreTarea.setText("");
                 jd_FechaTarea.setDate(new Date());
                 jta_ComentarioTarea.setText("");
@@ -1069,12 +1357,9 @@ public class Inicio extends javax.swing.JFrame {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(JD_Nuevo, "Error, No se creo correctamente");
             }
-            try {
-                bw.close();
-                fw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Bitacora g = new Bitacora(emailactivo, tf_NombreTarea.getText(), num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
         }
     }//GEN-LAST:event_btnAgregarTareaActionPerformed
 
@@ -1087,36 +1372,89 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_NuevaTareaActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        // TODO add your handling code here:
+        num = 8;
+        SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
         int i = jt_Modificar.getSelectedRow();
-        usuario.cargarArchivo();
-        usuario.getListaPersonas().get(posicion).getProyecto().get(i).setNombre(tf_NuevoNombre.getText());
-        usuario.getListaPersonas().get(posicion).getProyecto().get(i).setFecha(jd_NuevaFecha.getDate());
-        usuario.getListaPersonas().get(posicion).getProyecto().get(i).setComentario(jta_NuevoComentario.getText());
-        tf_NuevoNombre.setText("");
-        jd_NuevaFecha.setDate(new Date());
-        jta_NuevoComentario.setText("");
+        proyectos.get(i).setNombre(tf_NuevoNombre.getText());
+        proyectos.get(i).setFecha(s.format(jd_NuevaFecha.getDate()));
+        proyectos.get(i).setComentario(jta_NuevoComentario.getText());
+        try {
+            String nuevoN = tf_NuevoNombre.getText();
+            Date fechaN = jd_NuevaFecha.getDate();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            String fecha = df.format(fechaN);
+            String comentario = jta_NuevoComentario.getText();
+            Bitacora g = new Bitacora(emailactivo, tf_NuevoNombre.getText(), num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            int indProy = 0;
+            ap.cargarArchivo();
+            for (int j = 0; j < ap.getListaProyectos().size(); j++) {
+                if (ap.getListaProyectos().get(j).getNombre().equalsIgnoreCase(jt_Modificar.getValueAt(i, 0).toString())) {
+                    indProy = j;
+                }
+            }
+            DefaultTableModel model = (DefaultTableModel) jt_Modificar.getModel();
+            model.removeRow(i);
+            ap.getListaProyectos().remove(indProy);
+            Proyecto p = new Proyecto(emailactivo, nuevoN, fecha, comentario);
+            ap.getListaProyectos().add(p);
+            ap.escribirArchivo();
+            Object[] newRow = {
+                nuevoN, fecha, comentario
+            };
+            model.addRow(newRow);
+            jt_Modificar.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mostrar();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        usuario.cargarArchivo();
-        for (int i = 0; i < usuario.getListaPersonas().get(posicion).getProyecto().size(); i++) {
-            usuario.getListaPersonas().get(posicion).getProyecto().remove(i);
+        num = 9;
+        int i = jt_Eliminar.getSelectedRow();
+        int indProy = 0;
+        try {
+            ap.cargarArchivo();
+            for (int j = 0; j < ap.getListaProyectos().size(); j++) {
+                if (ap.getListaProyectos().get(j).getNombre().equalsIgnoreCase(jt_Eliminar.getValueAt(i, 0).toString())) {
+                    indProy = j;
+                }
+            }
+            proyectos.remove(i);
+            jp_Proyectos.setValue(proyectos.size());
+            ap.getListaProyectos().remove(indProy);
+            DefaultTableModel model = (DefaultTableModel) jt_Eliminar.getModel();
+            model.removeRow(i);
+            jt_Eliminar.setModel(model);
+            ap.escribirArchivo();
+            Bitacora g = new Bitacora(emailactivo, tf_NuevoNombre.getText(), num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            JOptionPane.showMessageDialog(JD_Eliminar, "Eliminado correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        JOptionPane.showMessageDialog(JD_Eliminar, "Eliminado correctamente");
+
         mostrar();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void jt_ModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_ModificarMouseClicked
-        usuario.cargarArchivo();
+        SimpleDateFormat s = new SimpleDateFormat("yyyy/MM/dd");
         int seleccion = jt_Modificar.getSelectedRow();
         tf_NuevoNombre.setText(jt_Modificar.getValueAt(seleccion, 0).toString());
-        jd_NuevaFecha.setDate(usuario.getListaPersonas().get(posicion).getProyecto().get(seleccion).getFecha());
+        try {
+            jd_NuevaFecha.setDate(s.parse(proyectos.get(seleccion).getFecha()));
+        } catch (ParseException ex) {
+            Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
+        }
         jta_NuevoComentario.setText(jt_Modificar.getValueAt(seleccion, 2).toString());
     }//GEN-LAST:event_jt_ModificarMouseClicked
 
     private void jmi_ModificarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_ModificarCuentaActionPerformed
+        lb_foto1.setIcon(usuario.getListaPersonas().get(posicion).getFotografia());
         JD_ModificarUsuario.setModal(true);
         JD_ModificarUsuario.pack();
         JD_ModificarUsuario.setLocationRelativeTo(null);
@@ -1135,53 +1473,53 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_tf_EmailNuevoKeyTyped
 
     private void tb_ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tb_ModificarActionPerformed
+        num = 4;
         usuario.cargarArchivo();
-        String aux, email, contraseña;
+        String aux, email, contraseña, u;
         if (usuario.getListaPersonas().get(posicion).getContraseña().equalsIgnoreCase(pf_contraAntigua.getText())) {
-            try {
-                aux = tf_EmailNuevo.getText();
-                email = aux + cbodireccionnuevo.getSelectedItem();
-                contraseña = pf_contraNuevo.getText();
-                usuario.getListaPersonas().get(posicion).setEmail(email);
-                usuario.getListaPersonas().get(posicion).setContraseña(contraseña);
-                usuario.escribirArchivo();
-                JOptionPane.showMessageDialog(JD_ModificarUsuario, "Usuario Modificado exitosamente");
-                tf_EmailNuevo.setText("");
-                pf_contraAntigua.setText("");
-                pf_contraNuevo.setText("");
-                cbodireccionnuevo.setSelectedIndex(0);
-            } catch (IOException ex) {
-                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            aux = tf_EmailNuevo.getText();
+            email = aux + cbodireccionnuevo.getSelectedItem();
+            contraseña = pf_contraNuevo.getText();
+            u = usuario.getListaPersonas().get(posicion).getEmail();
+            usuario.getListaPersonas().get(posicion).setEmail(email);
+            usuario.getListaPersonas().get(posicion).setContraseña(contraseña);
+            usuario.getListaPersonas().get(posicion).setFotografia(lb_foto1.getIcon());
+            usuario.escribirArchivo();
+            Bitacora g = new Bitacora(u, email, num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            JOptionPane.showMessageDialog(JD_ModificarUsuario, "Usuario Modificado exitosamente");
+            tf_EmailNuevo.setText("");
+            pf_contraAntigua.setText("");
+            pf_contraNuevo.setText("");
+            cbodireccionnuevo.setSelectedIndex(0);
         } else {
             JOptionPane.showMessageDialog(JD_ModificarUsuario, "Contraseña antigua incorrecta");
         }
     }//GEN-LAST:event_tb_ModificarActionPerformed
 
     private void jmi_EliminarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_EliminarCuentaActionPerformed
+        num = 5;
         String confirmar, aux = "CONFIRMAR";
         confirmar = JOptionPane.showInputDialog("Ingrese (CONFIRMAR) si desea Eliminar esta cuenta");
         if (aux.equals(confirmar)) {
-            try {
-                email = tf_EmailNuevo.getText();
-                contraseña = pf_contraNuevo.getText();
-                usuario.cargarArchivo();
-                usuario.getListaPersonas().remove(posicion);
-                usuario.escribirArchivo();
-                JOptionPane.showMessageDialog(this, "Se elimino correctamente");
-            } catch (IOException ex) {
-                Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            usuario.cargarArchivo();
+            Bitacora g = new Bitacora(emailactivo, num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            email = tf_EmailNuevo.getText();
+            contraseña = pf_contraNuevo.getText();
+            usuario.getListaPersonas().remove(posicion);
+            usuario.escribirArchivo();
+            JOptionPane.showMessageDialog(this, "Se elimino correctamente");
             jm_NuevoProyecto.setEnabled(false);
             jmi_Login.setEnabled(true);
-            
             jt_Eliminar.setModel(new javax.swing.table.DefaultTableModel(
                     new Object[][]{},
                     new String[]{
                         "Nombre", "Fecha", "Comentario"
                     }
             ));
-
             jt_Modificar.setModel(new javax.swing.table.DefaultTableModel(
                     new Object[][]{},
                     new String[]{
@@ -1196,21 +1534,157 @@ public class Inicio extends javax.swing.JFrame {
                     }
             ));
         }
+        jm_NuevoProyecto.setEnabled(false);
+        jmi_Login.setEnabled(true);
+        jm_Tarea.setEnabled(false);
+        jm_Configurar.setEnabled(false);
+        jmi_Salir.setEnabled(false);
+        jm_graficos.setEnabled(false);
     }//GEN-LAST:event_jmi_EliminarCuentaActionPerformed
 
-    public void mostrar() {
-        usuario.cargarArchivo();
-        for (int i = 0; i < proyectos.size(); i++) {
-            usuario.getListaPersonas().get(posicion).getProyecto().add(proyectos.get(i));
+    private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filtro = new FileNameExtensionFilter("Imagenes",
+                "png", "jpg", "jpeg", "gif");
+        fc.setFileFilter(filtro);
+        File archivo;
+        int op = fc.showOpenDialog(this);
+        if (op == JFileChooser.APPROVE_OPTION) {
+            archivo = fc.getSelectedFile();
+            Image img = Toolkit.getDefaultToolkit().createImage(
+                    archivo.getPath()).getScaledInstance(100, 100, 0);
+            this.lb_foto.setIcon(new ImageIcon(img));
+
         }
-        DefaultTableModel model = (DefaultTableModel) jt_Modificar.getModel();
-        System.out.println("Proyectos: "+ usuario.getListaPersonas().get(posicion).getProyecto());
-        
-        Object Matriz[][] = new String[usuario.getListaPersonas().get(posicion).getProyecto().size()][4];
-        for (int i = 0; i < usuario.getListaPersonas().get(posicion).getProyecto().size(); i++) {
-            Matriz[i][0] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getNombre();
-            Matriz[i][1] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getFecha().toString();
-            Matriz[i][2] = usuario.getListaPersonas().get(posicion).getProyecto().get(i).getComentario();
+    }//GEN-LAST:event_btnSeleccionarActionPerformed
+
+    private void btnSeleccionar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionar1ActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filtro = new FileNameExtensionFilter("Imagenes",
+                "png", "jpg", "jpeg", "gif");
+        fc.setFileFilter(filtro);
+        File archivo;
+        int op = fc.showOpenDialog(this);
+        if (op == JFileChooser.APPROVE_OPTION) {
+            archivo = fc.getSelectedFile();
+            Image img = Toolkit.getDefaultToolkit().createImage(
+                    archivo.getPath()).getScaledInstance(100, 100, 0);
+            this.lb_foto1.setIcon(new ImageIcon(img));
+
+        }
+    }//GEN-LAST:event_btnSeleccionar1ActionPerformed
+
+    private void cboModificarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboModificarItemStateChanged
+        if (evt.getStateChange() == 1) {
+            limpiar();
+            Proyecto p = (Proyecto) cboModificar.getSelectedItem();
+            db.conectar();
+            try {
+                db.query.execute("select nombre, fecha, comentario, proyecto FROM Tarea WHERE Proyecto = '" + p.getNombre() + "'");
+                ResultSet rs = db.query.getResultSet();
+                DefaultTableModel model = (DefaultTableModel) jt_ModificarT.getModel();
+                while (rs.next()) {
+                    String ob[] = {rs.getString(1), rs.getString(2), rs.getString(3)};
+                    model.addRow(ob);
+                    jt_ModificarT.setModel(model);
+                }
+                db.desconectar();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_cboModificarItemStateChanged
+
+    private void jt_ModificarTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_ModificarTMouseClicked
+        if (evt.isMetaDown()) {
+            popupModificar.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_jt_ModificarTMouseClicked
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        JD_ModificarTarea.setModal(true);
+        JD_ModificarTarea.pack();
+        JD_ModificarTarea.setLocationRelativeTo(null);
+        JD_ModificarTarea.setVisible(true);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jmi_ModificarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_ModificarTareaActionPerformed
+        db.conectar();
+        num = 6;
+        try {
+            String nombrea, nombren, fecha, comentario;
+            nombrea = JOptionPane.showInputDialog("Ingrese Nombre antiguo");
+            nombren = JOptionPane.showInputDialog("Ingrese Nuevo Nombre");
+            fecha = JOptionPane.showInputDialog("Ingrese Nueva Fecha(yyyy/MM/dd)");
+            comentario = JOptionPane.showInputDialog("Ingrese Nuevo Comentario");
+            db.query.execute("update Tarea set Fecha='" + fecha + "' where nombre='" + nombrea + "'");
+            db.query.execute("update Tarea set Comentario='" + comentario + "' where nombre='" + nombrea + "'");
+            db.query.execute("update Tarea set Nombre='" + nombren + "' where nombre='" + nombrea + "'");
+            JOptionPane.showMessageDialog(JD_ModificarTarea, "Se modifico Correctamente");
+            Bitacora g = new Bitacora(emailactivo, nombrea, num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            limpiar();
+            Proyecto p = (Proyecto) cboModificar.getSelectedItem();
+            db.query.execute("select nombre, fecha, comentario, proyecto FROM Tarea WHERE Proyecto = '" + p.getNombre() + "'");
+            ResultSet rs = db.query.getResultSet();
+            DefaultTableModel model = (DefaultTableModel) jt_ModificarT.getModel();
+            while (rs.next()) {
+                String ob[] = {rs.getString(1), rs.getString(2), rs.getString(3)};
+                model.addRow(ob);
+                jt_ModificarT.setModel(model);
+            }
+            db.commit();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        db.desconectar();
+    }//GEN-LAST:event_jmi_ModificarTareaActionPerformed
+
+    private void jmi_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_EliminarActionPerformed
+        db.conectar();
+        num = 7;
+        try {
+            String nombre = JOptionPane.showInputDialog("Ingrese Nombre de la tarea");
+            db.query.execute("delete FROM Tarea WHERE Nombre='" + nombre + "'");
+            Bitacora g = new Bitacora(emailactivo, nombre, num);
+            Thread proceso2 = new Thread(g);
+            proceso2.start();
+            limpiar();
+            Proyecto p = (Proyecto) cboModificar.getSelectedItem();
+            db.query.execute("select nombre, fecha, comentario, proyecto FROM Tarea WHERE Proyecto = '" + p.getNombre() + "'");
+            ResultSet rs = db.query.getResultSet();
+            DefaultTableModel model = (DefaultTableModel) jt_ModificarT.getModel();
+            while (rs.next()) {
+                String ob[] = {rs.getString(1), rs.getString(2), rs.getString(3)};
+                model.addRow(ob);
+                jt_ModificarT.setModel(model);
+            }
+            db.commit();
+            JOptionPane.showMessageDialog(JD_ModificarTarea, "Eliminado Correctamente");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        db.desconectar();
+    }//GEN-LAST:event_jmi_EliminarActionPerformed
+
+    private void jm_graficosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jm_graficosActionPerformed
+
+    }//GEN-LAST:event_jm_graficosActionPerformed
+
+    private void jmi_graficosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_graficosActionPerformed
+        JD_Graficos.setModal(true);
+        JD_Graficos.pack();
+        JD_Graficos.setLocationRelativeTo(null);
+        JD_Graficos.setVisible(true);
+    }//GEN-LAST:event_jmi_graficosActionPerformed
+
+    public void mostrar() {
+        Object Matriz[][] = new String[proyectos.size()][30];
+        for (int i = 0; i < proyectos.size(); i++) {
+            Matriz[i][0] = proyectos.get(i).getNombre();
+            Matriz[i][1] = proyectos.get(i).getFecha().toString();
+            Matriz[i][2] = proyectos.get(i).getComentario();
         }
         jt_Listar.setModel(new javax.swing.table.DefaultTableModel(
                 Matriz,
@@ -1227,6 +1701,15 @@ public class Inicio extends javax.swing.JFrame {
 
         jt_Modificar.setModel(new javax.swing.table.DefaultTableModel(
                 Matriz,
+                new String[]{
+                    "Nombre", "Fecha", "Comentario"
+                }
+        ));
+    }
+
+    public void limpiar() {
+        jt_ModificarT.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
                 new String[]{
                     "Nombre", "Fecha", "Comentario"
                 }
@@ -1268,9 +1751,11 @@ public class Inicio extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog JD_Eliminar;
+    private javax.swing.JDialog JD_Graficos;
     private javax.swing.JDialog JD_Listar;
     private javax.swing.JDialog JD_Login;
     private javax.swing.JDialog JD_Modificar;
+    private javax.swing.JDialog JD_ModificarTarea;
     private javax.swing.JDialog JD_ModificarUsuario;
     private javax.swing.JDialog JD_NuevaTarea;
     private javax.swing.JDialog JD_Nuevo;
@@ -1279,6 +1764,9 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregarTarea;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnSeleccionar;
+    private javax.swing.JButton btnSeleccionar1;
+    private javax.swing.JComboBox<String> cboModificar;
     private javax.swing.JComboBox<String> cboProyectos;
     private javax.swing.JComboBox<String> cbodireccion;
     private javax.swing.JComboBox<String> cbodireccionnuevo;
@@ -1305,6 +1793,9 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1312,12 +1803,16 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -1328,6 +1823,9 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JMenu jm_Configurar;
     private javax.swing.JMenu jm_Inicio;
     private javax.swing.JMenu jm_NuevoProyecto;
+    private javax.swing.JMenu jm_Tarea;
+    private javax.swing.JMenu jm_graficos;
+    private javax.swing.JMenuItem jmi_Eliminar;
     private javax.swing.JMenuItem jmi_EliminarCuenta;
     private javax.swing.JMenuItem jmi_EliminarProyecto;
     private javax.swing.JMenuItem jmi_ListarProyecto;
@@ -1335,21 +1833,29 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmi_Logout;
     private javax.swing.JMenuItem jmi_Modificar;
     private javax.swing.JMenuItem jmi_ModificarCuenta;
+    private javax.swing.JMenuItem jmi_ModificarTarea;
     private javax.swing.JMenuItem jmi_NuevaTarea;
     private javax.swing.JMenuItem jmi_NuevoProyecto;
     private javax.swing.JMenuItem jmi_Salir;
+    private javax.swing.JMenuItem jmi_graficos;
+    private javax.swing.JProgressBar jp_Proyectos;
+    private javax.swing.JProgressBar jp_Tareas;
     private javax.swing.JTable jt_Eliminar;
     private javax.swing.JTable jt_Listar;
     private javax.swing.JTable jt_Modificar;
+    private javax.swing.JTable jt_ModificarT;
     private javax.swing.JTextArea jta_Comentario;
     private javax.swing.JTextArea jta_ComentarioTarea;
     private javax.swing.JTextArea jta_NuevoComentario;
+    private javax.swing.JLabel lb_foto;
+    private javax.swing.JLabel lb_foto1;
     private javax.swing.JLabel lblLogin;
     private javax.swing.JLabel lblRegistrarse;
     private javax.swing.JPasswordField pf_ContraI;
     private javax.swing.JPasswordField pf_contraAntigua;
     private javax.swing.JPasswordField pf_contraNuevo;
     private javax.swing.JPasswordField pf_contraR;
+    private javax.swing.JPopupMenu popupModificar;
     private javax.swing.JToggleButton tb_IniciarS;
     private javax.swing.JToggleButton tb_Modificar;
     private javax.swing.JToggleButton tb_Registrar;

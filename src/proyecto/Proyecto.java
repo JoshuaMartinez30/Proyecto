@@ -6,28 +6,22 @@ import java.util.Date;
 public class Proyecto {
    private String usuario;
    private String nombre;
-   private Date Fecha;
+   private String Fecha;
    private String comentario;
    private ArrayList<Tarea> tarea = new ArrayList(); 
 
     public Proyecto() {
     }
 
-    public Proyecto(ArrayList tarea){
-        setTarea(tarea);
-    }
-    
-    public Proyecto(String nombre, Date Fecha, String comentario) {
-        this.nombre = nombre;
-        this.Fecha = Fecha;
-        this.comentario = comentario;
-    }
-
-    public Proyecto(String usuario, String nombre, Date Fecha, String comentario) {
+    public Proyecto(String usuario, String nombre, String Fecha, String comentario) {
         this.usuario = usuario;
         this.nombre = nombre;
         this.Fecha = Fecha;
         this.comentario = comentario;
+    }
+    
+    public Proyecto(ArrayList tarea){
+        setTarea(tarea);
     }
 
     public String getUsuario() {
@@ -46,11 +40,11 @@ public class Proyecto {
         this.nombre = nombre;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return Fecha;
     }
 
-    public void setFecha(Date Fecha) {
+    public void setFecha(String Fecha) {
         this.Fecha = Fecha;
     }
 
@@ -75,10 +69,4 @@ public class Proyecto {
         return nombre;
     }
 
-    
-    
-    
-   
-    
-   
 }
